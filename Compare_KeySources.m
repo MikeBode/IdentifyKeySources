@@ -129,8 +129,13 @@ BS_model_A = sum(BadSources_EachMatrix,2);
 A_Worst = find(BS_model_A > median(BS_model_A));
 
 % ======================================================================================
-% ========= Check if Key Sources in model A are also Key Sources in model H  =========
+% ========= Check if Key Sources in model A are also Key Sources in model H  ===========
 % ======================================================================================
+
+% In both models, which reefs could not be matched to reefs in the other model?
+% These will be excluded from the comparisons and calculations that follow.
+Number_ASources_FoundInH = sum(isnan(A_Match(A_Sources))==0);
+Number_HSources_FoundInA = sum(isnan(H_Match(KeySources))==0);
 
 % Key sources in A that are also in H
 KeySourcesA_DefH = [];
@@ -139,13 +144,13 @@ for a = 1:length(A_Sources)  % Note that a single key source in model A may matc
 end
 SourcesInBoth = unique(intersect(KeySourcesA_DefH,KeySources));
 Num_SourcesInBoth = length(SourcesInBoth);
-Prop_SourcesInBoth_AinH = Num_SourcesInBoth./length(A_Sources)
+Prop_SourcesInBoth_AinH = Num_SourcesInBoth./Number_ASources_FoundInH
 
 % Which of the Key Sources in H are the worst sources in A?
 KeySourcesH_DefA = H_Match(KeySources);
 WorstA_KeyH = unique(intersect(A_Worst,KeySourcesH_DefA));
 Num_WorstA_KeyH = length(WorstA_KeyH);
-Prop_WorstA_KeyH = Num_WorstA_KeyH./length(KeySources)
+Prop_WorstA_KeyH = Num_WorstA_KeyH./Number_HSources_FoundInA
 
 % ======================================================
 % ================== Plot the results ==================
